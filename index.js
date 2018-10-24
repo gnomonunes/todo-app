@@ -83,37 +83,63 @@ subs1.unsubscribe = store.subscribe(subs1.storeUpdated)
 // subs2.unsubscribe = store.subscribe(subs2.storeUpdated)
 
 
-const addTodoAction = todo => ({ type: ADD_TODO, todo })
+const addTodoAction = todo => (
+  {
+    type: ADD_TODO,
+    todo: {
+      ...{
+        id: generateUUID(),
+        complete: false
+      },
+      ...todo
+    }
+  }
+)
 const removeTodoAction = id => ({ type: REMOVE_TODO, id })
 const toggleTodoAction = id => ({ type: TOGGLE_TODO, id })
 
 const addGoalAction = goal => ({ type: ADD_GOAL, goal })
 const removeGoalAction = id => ({ type: REMOVE_GOAL, id })
 
-store.dispatch(addTodoAction({
-  id: 1,
-  description: "study redux",
-  complete: false
-}))
+// store.dispatch(addTodoAction({
+//   id: 1,
+//   description: "study redux",
+//   complete: false
+// }))
+//
+// store.dispatch(addTodoAction({
+//   id: 2,
+//   description: "do the laundry",
+//   complete: false
+// }))
+//
+// store.dispatch(removeTodoAction(2))
+//
+// store.dispatch(toggleTodoAction(1))
+//
+// store.dispatch(addGoalAction({
+//   id: 1,
+//   description: "finish redux training"
+// }))
+//
+// store.dispatch(addGoalAction({
+//   id: 2,
+//   description: "create an app"
+// }))
+//
+// store.dispatch(removeGoalAction(1))
 
-store.dispatch(addTodoAction({
-  id: 2,
-  description: "do the laundry",
-  complete: false
-}))
 
-store.dispatch(removeTodoAction(2))
+// DOM code
 
-store.dispatch(toggleTodoAction(1))
+const addTodo = () => {
+  const input = document.getElementById('todo')
+  const description = input.value;
 
-store.dispatch(addGoalAction({
-  id: 1,
-  description: "finish redux training"
-}))
+  input.value = '';
 
-store.dispatch(addGoalAction({
-  id: 2,
-  description: "create an app"
-}))
+  store.dispatch(addTodoAction({ description }))
+}
 
-store.dispatch(removeGoalAction(1))
+document.getElementById('todoBtn')
+  .addEventListener('click', addTodo)
