@@ -37,11 +37,30 @@ const goals = (state = [], action) => {
   }
 }
 
+// Check action is valid before dispatching
+const checker = store => next => action => {
+  if (
+    action.type === ADD_TODO &&
+    action.todo.description.toLowerCase().indexOf('bitcoin') !== -1
+  ) {
+    return alert("Nope. That's a bad idea.")
+  }
+
+  if (
+    action.type === ADD_GOAL &&
+    action.goal.description.toLowerCase().indexOf('bitcoin') !== -1
+  ) {
+    return alert("Nope. That's a bad idea.")
+  }
+
+  next(action)
+}
+
 // Create the store using our reducer
 const store = Redux.createStore(Redux.combineReducers({
   todos,
   goals
-}))
+}), Redux.applyMiddleware(checker))
 
 // Function to update the todos and goals in the application interface
 const updateLists = () => {
@@ -56,7 +75,6 @@ const updateLists = () => {
 
 // Make updateLists a subscriber to store changes
 store.subscribe(updateLists)
-
 
 const addTodoAction = todo => (
   {
