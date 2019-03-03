@@ -7,7 +7,7 @@ const TOGGLE_TODO = "TOGGLE_TODO"
 const ADD_GOAL = "ADD_GOAL"
 const REMOVE_GOAL = "REMOVE_GOAL"
 
-// Todos store: handle todos state changes
+// Todos store reducer: handle todos state changes
 const todos = (state = [], action) => {
   switch (action.type) {
     case ADD_TODO:
@@ -25,7 +25,7 @@ const todos = (state = [], action) => {
   }
 }
 
-// Goals store: handle goals state changes
+// Goals store reducer: handle goals state changes
 const goals = (state = [], action) => {
   switch (action.type) {
     case ADD_GOAL:
@@ -37,16 +37,11 @@ const goals = (state = [], action) => {
   }
 }
 
-// Handle applications state changes
-const reducer = (state = {}, action) => {
-  return {
-    todos: todos(state.todos, action),
-    goals: goals(state.goals, action)
-  }
-}
-
 // Create the store using our reducer
-const store = Redux.createStore(reducer)
+const store = Redux.createStore(Redux.combineReducers({
+  todos,
+  goals
+}))
 
 // Function to update the todos and goals in the application interface
 const updateLists = () => {
