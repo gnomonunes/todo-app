@@ -53,14 +53,24 @@ const checker = store => next => action => {
     return alert("Nope. That's a bad idea.")
   }
 
-  next(action)
+  return next(action)
+}
+
+const logger = store => next => action => {
+  console.group(action.type)
+  console.log('The action: ', action)
+  const result = next(action)
+  console.log('The new state: ', store.getState())
+  console.groupEnd()
+
+  return result
 }
 
 // Create the store using our reducer
 const store = Redux.createStore(Redux.combineReducers({
   todos,
   goals
-}), Redux.applyMiddleware(checker))
+}), Redux.applyMiddleware(checker, logger))
 
 // Function to update the todos and goals in the application interface
 const updateLists = () => {
