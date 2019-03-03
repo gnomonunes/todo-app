@@ -1,43 +1,13 @@
-const createStore = (reducer) => {
-  let state
-  let listeners = []
-
-  const getState = () => state
-
-  const subscribe = (listener) => {
-    listeners.push(listener)
-
-    return () => {
-      listeners = listeners.filter((l) => l !== listener)
-    }
-  }
-
-  const dispatch = (action) => {
-    state = reducer(state, action)
-
-    listeners.forEach(listener => listener())
-  }
-
-  return {
-    getState,
-    subscribe,
-    dispatch
-  }
-}
-
+// Actions
+// Todo actions
 const ADD_TODO = "ADD_TODO"
 const REMOVE_TODO = "REMOVE_TODO"
 const TOGGLE_TODO = "TOGGLE_TODO"
+// Goals actions
 const ADD_GOAL = "ADD_GOAL"
 const REMOVE_GOAL = "REMOVE_GOAL"
 
-const app = (state = {}, action) => {
-  return {
-    todos: todos(state.todos, action),
-    goals: goals(state.goals, action)
-  }
-}
-
+// Todos store: handle todos state changes
 const todos = (state = [], action) => {
   switch (action.type) {
     case ADD_TODO:
@@ -55,6 +25,7 @@ const todos = (state = [], action) => {
   }
 }
 
+// Goals store: handle goals state changes
 const goals = (state = [], action) => {
   switch (action.type) {
     case ADD_GOAL:
@@ -66,16 +37,18 @@ const goals = (state = [], action) => {
   }
 }
 
-const susbcriber = (name, store) => {
-  const storeUpdated = () => console.log("\n\n", `${name} notifided:`, store.getState())
-
+// Handle applications state changes
+const reducer = (state = {}, action) => {
   return {
-    storeUpdated
+    todos: todos(state.todos, action),
+    goals: goals(state.goals, action)
   }
 }
 
-const store = createStore(app)
+// Create the store using our reducer
+const store = Redux.createStore(reducer)
 
+// Function to update the todos and goals in the application interface
 const updateLists = () => {
   const { todos, goals } = store.getState()
 
@@ -86,7 +59,9 @@ const updateLists = () => {
   goals.forEach(addGoalToDOM)
 }
 
+// Make updateLists a subscriber to store changes
 store.subscribe(updateLists)
+
 
 const addTodoAction = todo => (
   {
@@ -100,7 +75,6 @@ const addTodoAction = todo => (
     }
   }
 )
-
 const removeTodoAction = id => ({ type: REMOVE_TODO, id })
 const toggleTodoAction = id => ({ type: TOGGLE_TODO, id })
 
