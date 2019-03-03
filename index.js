@@ -57,24 +57,6 @@ const updateLists = () => {
 // Make updateLists a subscriber to store changes
 store.subscribe(updateLists)
 
-// Check action is valid before dispatching
-const checkAndDispatch = (store, action) => {
-  if (
-    action.type === ADD_TODO &&
-    action.todo.description.toLowerCase().indexOf('bitcoin') !== -1
-  ) {
-    return alert("Nope. That's a bad idea.")
-  }
-
-  if (
-    action.type === ADD_GOAL &&
-    action.goal.description.toLowerCase().indexOf('bitcoin') !== -1
-  ) {
-    return alert("Nope. That's a bad idea.")
-  }
-
-  store.dispatch(action)
-}
 
 const addTodoAction = todo => (
   {
@@ -110,12 +92,12 @@ const removeGoalAction = id => ({ type: REMOVE_GOAL, id })
 const addTodoToDOM = (todo) => {
   const node = document.createElement('li')
   const text = document.createTextNode(todo.description)
-  const removeBtn = removeButton(() => (checkAndDispatch(store, removeTodoAction(todo.id))))
+  const removeBtn = removeButton(() => (store.dispatch(removeTodoAction(todo.id))))
 
   node.style.textDecoration = todo.complete ? 'line-through' : 'none'
 
   node.addEventListener('click', () => {
-    checkAndDispatch(store, toggleTodoAction(todo.id))
+    store.dispatch(toggleTodoAction(todo.id))
   })
 
   node.appendChild(text)
@@ -128,7 +110,7 @@ const addTodoToDOM = (todo) => {
 const addGoalToDOM = (goal) => {
   const node = document.createElement('li')
   const text = document.createTextNode(goal.description)
-  const removeBtn = removeButton(() => (checkAndDispatch(store, removeGoalAction(goal.id))))
+  const removeBtn = removeButton(() => (store.dispatch(removeGoalAction(goal.id))))
 
   node.appendChild(text)
   node.appendChild(removeBtn)
@@ -151,7 +133,7 @@ const addTodo = () => {
 
   input.value = '';
 
-  checkAndDispatch(store, addTodoAction({ description }))
+  store.dispatch(addTodoAction({ description }))
 }
 
 const addGoal = () => {
@@ -160,7 +142,7 @@ const addGoal = () => {
 
   input.value = '';
 
-  checkAndDispatch(store, addGoalAction({ description }))
+  store.dispatch(addGoalAction({ description }))
 }
 
 document.getElementById('todoBtn')
